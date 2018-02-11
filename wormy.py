@@ -42,10 +42,74 @@ def main():
 
 
 def showStartScreen():
-    pass
+    titleFont = pygame.font.Font('freesansbold.ttf', 100)
+    titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN)
+    titleSurf2 = titleFont.render('Wormy!', True, GREEN)
+
+    degrees1 = 0
+    degrees2 = 0
+
+    while True:
+        DISPLAYSURF.fill(BGCOLOR)
+        rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
+        rotatedRect1 = rotatedSurf1.get_rect()
+        rotatedRect1.center = (WINDOWWIDTH/2, WINDOWHEIGHT/2)
+        DISPLAYSURF.blit(rotatedSurf1, rotatedRect1)
+
+        rotatedSurf2 = pygame.transform.rotate(titleSurf2, degrees2)
+        rotatedRect2 = rotatedSurf2.get_rect()
+        rotatedRect2.center = rotatedRect1.center
+        DISPLAYSURF.blit(rotatedSurf2, rotatedRect2)
+
+        drawPresskeyMsg()
+
+        if checkForKeyPress():
+            pygame.event.get()  # clear event queue
+            return
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+        degrees1 += 3
+        degrees2 += 7
+
+def drawPresskeyMsg():
+    pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
+    pressKeyRect = pressKeySurf.get_rect()
+    pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30)
+    DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
+
+
+def checkForKeyPress():
+    if len(pygame.event.get(QUIT)) > 0:
+        terminate()
+
+    keyUpEvents = pygame.event.get(KEYUP)
+    if len(keyUpEvents) == 0:
+        return None
+    if keyUpEvents[0].key == K_ESCAPE:
+        terminate()
+    return keyUpEvents[0].key
 
 def showGameOverScreen():
-    pass
+    gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
+    gameSurf = gameOverFont.render('Game', True, WHITE)
+    overSurf = gameOverFont.render('Over', True, WHITE)
+    gameRect = gameSurf.get_rect()
+    overRect = overSurf.get_rect()
+    gameRect.midtop = (WINDOWWIDTH / 2, 10)
+    overRect.midtop = (WINDOWWIDTH / 2, gameRect.height + 10 + 25)
+
+    DISPLAYSURF.blit(gameSurf, gameRect)
+    DISPLAYSURF.blit(overSurf, overRect)
+    drawPresskeyMsg()
+    pygame.display.update()
+    pygame.time.wait(500)
+    checkForKeyPress()
+
+    while True:
+        if checkForKeyPress():
+            pygame.event.get()
+            return
+
 
 def runGame():
     # Set a random start point.
