@@ -113,6 +113,7 @@ def runGame():
         drawGrid()
         drawWorm(wormCoords)
         drawApple(apple)
+        drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
@@ -130,6 +131,12 @@ def drawWorm(wormCoords):
         pygame.draw.rect(DISPLAYSURF, DARKGREEN, wormSegmentRect)
         wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
         pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
+
+def drawScore(score):
+    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
+    scoreRect = scoreSurf.get_rect()
+    scoreRect.topleft = (WINDOWWIDTH - 120, 10)
+    DISPLAYSURF.blit(scoreSurf, scoreRect)
 
 
 
