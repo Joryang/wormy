@@ -1,3 +1,4 @@
+# coding: utf-8
 import random, pygame, sys
 from pygame.locals import *
 
@@ -190,8 +191,11 @@ def drawGrid():
 
 def drawWorm(wormCoords):
     for coord in wormCoords:
+        # 首先, 将cell坐标转换为屏幕坐标
         x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
+
+        # 绘制蛇的片段, 包括外围的深绿色和内部的浅绿色
         wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
         pygame.draw.rect(DISPLAYSURF, DARKGREEN, wormSegmentRect)
         wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)

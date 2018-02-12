@@ -46,6 +46,10 @@ def drawGrid():
     for y in range(0, WINDOWHEIGHT, CELLSIZE):
         pygame.draw.line(DISPLAYSURF, DARKGRAY, (0, y), (WINDOWWIDTH, y))
 
+
+def getRandomLocation():
+    return {'x': random.randint(0, CELLWIDTH -1), 'y': random.randint(0, CELLHEIGHT-1)}
+
 def runGame():
 
     startx = random.randint(5, CELLWIDTH - 6)
@@ -56,6 +60,7 @@ def runGame():
     # 设置初始移动方向
     direction = RIGHT
 
+    apple = getRandomLocation()
 
     while True:
         for event in pygame.event.get():
@@ -84,6 +89,12 @@ def runGame():
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
                 return  # game over
 
+            # check if worm has eaten an apple
+        if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
+            apple = getRandomLocation()
+        else:
+            del wormCoords[-1]
+
 
         # 添加新的head
         if direction == UP:
@@ -97,14 +108,19 @@ def runGame():
 
         wormCoords.insert(0, newHead)
 
-        # 删除末尾
-        del wormCoords[-1]
 
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
         drawWorm(wormCoords)
+        drawApple(apple)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+
+def drawApple(coord):
+    x = coord['x'] * CELLSIZE
+    y = coord['y'] * CELLSIZE
+    appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    pygame.draw.rect(DISPLAYSURF, RED, appleRect)
 
 def drawWorm(wormCoords):
     for coord in wormCoords:
