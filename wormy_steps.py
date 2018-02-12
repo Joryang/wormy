@@ -1,3 +1,4 @@
+# coding: utf-8
 import random, pygame, sys
 from pygame.locals import *
 
@@ -52,11 +53,52 @@ def runGame():
     wormCoords = [{'x': startx, 'y': starty},
                  {'x': startx - 1, 'y': starty},
                  {'x': startx - 2, 'y': starty}]
+    # 设置初始移动方向
+    direction = RIGHT
+
 
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
+
+            # 获取按键输入
+            elif event.type == KEYDOWN:
+                if (event.key == K_LEFT or event.key == K_a) and direction != RIGHT:
+                    direction = LEFT
+                elif (event.key == K_RIGHT or event.key == K_d) and direction != LEFT:
+                    direction = RIGHT
+                elif (event.key == K_UP or event.key == K_w) and direction != DOWN:
+                    direction = UP
+                elif (event.key == K_DOWN or event.key == K_s) and direction != UP:
+                    direction = DOWN
+                elif event.key == K_ESCAPE:
+                    terminate()
+
+        # check if the worm has hit itself or the edge
+        if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or \
+                        wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
+            return  # game over
+
+        for wormBody in wormCoords[1:]:
+            if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
+                return  # game over
+
+
+        # 添加新的head
+        if direction == UP:
+            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] - 1}
+        elif direction == DOWN:
+            newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] + 1}
+        elif direction == LEFT:
+            newHead = {'x': wormCoords[HEAD]['x'] - 1, 'y': wormCoords[HEAD]['y']}
+        elif direction == RIGHT:
+            newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']}
+
+        wormCoords.insert(0, newHead)
+
+        # 删除末尾
+        del wormCoords[-1]
 
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
