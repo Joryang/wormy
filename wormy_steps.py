@@ -46,6 +46,13 @@ def drawGrid():
         pygame.draw.line(DISPLAYSURF, DARKGRAY, (0, y), (WINDOWWIDTH, y))
 
 def runGame():
+
+    startx = random.randint(5, CELLWIDTH - 6)
+    starty = random.randint(5, CELLHEIGHT - 6)
+    wormCoords = [{'x': startx, 'y': starty},
+                 {'x': startx - 1, 'y': starty},
+                 {'x': startx - 2, 'y': starty}]
+
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -53,8 +60,19 @@ def runGame():
 
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
+        drawWorm(wormCoords)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+
+def drawWorm(wormCoords):
+    for coord in wormCoords:
+        x = coord['x'] * CELLSIZE
+        y = coord['y'] * CELLSIZE
+        wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+        pygame.draw.rect(DISPLAYSURF, DARKGREEN, wormSegmentRect)
+        wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
+        pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
+
 
 
 def terminate():
